@@ -1,0 +1,28 @@
+version: "3"
+services:
+  database:
+    container_name: database
+    restart: always
+    image: postgres:13
+    volumes:
+      - ./psql:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+
+  server:
+    container_name: server
+    restart: always
+    build: .
+    links:
+      - database
+    ports:
+      - "8000:8000"
+    depends_on:
+      - database
+    volumes:
+      - ./storage:/app/storage
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=password
+      - DATABASE_DATABASE=postgres
